@@ -33,6 +33,18 @@ class NetworkRepository {
         }
     }
     
+    private suspend fun fetchDataProductById(id: String): HttpResponse {
+        val response = client.get("https://fakestoreapi.com/products/$id")
+        return response
+    }
+    
+    fun fetchProductById(id: String): Flow<State<ProductResponseItem>> {
+        return suspend {
+            fetchDataProductById(id)
+        }.reduce<ProductResponseItem> {
+            State.Success(it)
+        }
+    }
     
     private suspend fun fetchDataResponse(): HttpResponse {
         val response = client.get("https://fakestoreapi.com/products")
@@ -40,7 +52,7 @@ class NetworkRepository {
         return response
     }
     
-     fun fetchProduct(): Flow<State<ProductResponse>> {
+    fun fetchProduct(): Flow<State<ProductResponse>> {
         return suspend {
             fetchDataResponse()
         }.reduce<ProductResponse> {

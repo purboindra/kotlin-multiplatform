@@ -42,6 +42,7 @@ fun App() {
         
         LaunchedEffect(Unit) {
             viewModel.handleIntent(AppIntent.FetchApi)
+//            viewModel.handleIntent(AppIntent.FetchProductById("1"))
         }
         
         Column(

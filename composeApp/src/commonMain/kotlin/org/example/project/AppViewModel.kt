@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import org.example.project.network.NetworkRepository
 import org.example.project.network.State
 import org.example.project.network.response.ProductResponse
+import org.example.project.network.response.ProductResponseItem
 import kotlin.coroutines.CoroutineContext
 
 sealed class AppIntent {
     data object FetchApi : AppIntent()
+    data class FetchProductById(val id: String) : AppIntent()
 }
 
 class AppViewModel {
@@ -26,6 +28,15 @@ class AppViewModel {
     
     val stateData: StateFlow<State<ProductResponse>> get() = mutableStateData
     
+    //    PRODUCT BY ID
+    private val mutableStateDataProductById: MutableStateFlow<State<ProductResponseItem>> =
+        MutableStateFlow(
+            State.Idle
+        )
+    
+    val stateDataProductById: StateFlow<State<ProductResponseItem>> get() = mutableStateDataProductById
+    
+    
     private val viewModelScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext get() = SupervisorJob() + Dispatchers.Main
     }
@@ -35,8 +46,18 @@ class AppViewModel {
             is AppIntent.FetchApi -> {
                 fetchApi()
             }
+            
+            is AppIntent.FetchProductById -> {
+                fetchProductById(
+                    appIntent.id
+                )
+            }
         }
-        
+    }
+    
+    private fun fetchProductById(id: String) = viewModelScope.launch {
+        // HARDCODE ID
+        networkRepository.fetchProductById(id).stateIn(this).collect(mutableStateDataProductById)
     }
     
     private fun fetchApi() = viewModelScope.launch {
