@@ -31,7 +31,6 @@ kotlin {
         kotlin.srcDirs(secretFolder)
     }
     
-    
     sourceSets {
         
         androidMain.dependencies {
@@ -54,6 +53,9 @@ kotlin {
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.client.json)
             implementation(libs.ktor.client.logging)
+            
+            // VIEW MODEL
+            implementation(libs.jetbrain.viewmodel)
         }
         
         iosMain.dependencies {

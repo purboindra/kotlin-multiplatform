@@ -1,66 +1,68 @@
 package org.example.project
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.example.project.network.NetworkRepository
+import org.example.project.base.BaseViewModel
+import org.example.project.network.ProductRepository
 import org.example.project.network.State
+import org.example.project.network.data.Product
 import org.example.project.network.response.ProductResponse
 import org.example.project.network.response.ProductResponseItem
-import kotlin.coroutines.CoroutineContext
 
 sealed class AppIntent {
     data object FetchApi : AppIntent()
     data class FetchProductById(val id: String) : AppIntent()
+    data object UpdateCounter : AppIntent()
 }
 
-class AppViewModel {
-    
-    private val networkRepository = NetworkRepository()
-    
-    private val mutableStateData: MutableStateFlow<State<ProductResponse>> = MutableStateFlow(
-        State.Idle
-    )
-    
-    val stateData: StateFlow<State<ProductResponse>> get() = mutableStateData
-    
-    //    PRODUCT BY ID
-    private val mutableStateDataProductById: MutableStateFlow<State<ProductResponseItem>> =
-        MutableStateFlow(
-            State.Idle
-        )
-    
-    val stateDataProductById: StateFlow<State<ProductResponseItem>> get() = mutableStateDataProductById
+data class AppModel(
+    val counter: Int = 0,
+    val productResponseState: State<Product> = State.Idle,
+    val productByIdResponseState: State<ProductResponseItem> = State.Idle,
+)
+
+class AppViewModel(
+    private val productRepository: ProductRepository = ProductRepository()
+) : BaseViewModel<AppModel, AppIntent>(AppModel()) {
+
+
+//    private val viewModelScope = object : CoroutineScope {
+//        override val coroutineContext: CoroutineContext get() = SupervisorJob() + Dispatchers.Main
+//    }
     
     
-    private val viewModelScope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext get() = SupervisorJob() + Dispatchers.Main
+    override fun handleIntent(appIntent: AppIntent) {
+        when (appIntent) {
+            is AppIntent.FetchApi -> fetchApi()
+            is AppIntent.FetchProductById -> fetchProductById(appIntent.id)
+            is AppIntent.UpdateCounter -> updateCounter()
+        }
     }
     
-    fun handleIntent(appIntent: AppIntent) {
-        when (appIntent) {
-            is AppIntent.FetchApi -> {
-                fetchApi()
-            }
-            
-            is AppIntent.FetchProductById -> {
-                fetchProductById(
-                    appIntent.id
+    private fun updateCounter() {
+        updateModel { it.copy(counter = it.counter + 1) }
+    }
+    
+    private fun fetchProductById(id: String) = viewModelScope.launch {
+        productRepository.fetchProductById(id).stateIn(this).collectLatest { state ->
+            updateModel {
+                it.copy(
+//                    productByIdResponseState = state
                 )
             }
         }
     }
     
-    private fun fetchProductById(id: String) = viewModelScope.launch {
-        // HARDCODE ID
-        networkRepository.fetchProductById(id).stateIn(this).collect(mutableStateDataProductById)
+    private fun fetchApi() = viewModelScope.launch {
+        productRepository.fetchProduct().stateIn(this).collectLatest { state ->
+            updateModel {
+                it.copy(
+                    productResponseState = state
+                )
+            }
+        }
     }
     
-    private fun fetchApi() = viewModelScope.launch {
-        networkRepository.fetchProduct().stateIn(this).collect(mutableStateData)
-    }
 }
