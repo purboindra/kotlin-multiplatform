@@ -5,11 +5,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.example.project.base.BaseViewModel
-import org.example.project.network.ProductRepository
-import org.example.project.network.State
-import org.example.project.network.data.Product
-import org.example.project.network.response.ProductResponse
-import org.example.project.network.response.ProductResponseItem
+import org.example.project.repository.ProductRepository
+import org.example.project.base.State
+import org.example.project.entity.data.Product
+import org.example.project.entity.response.ProductResponseItem
 
 sealed class AppIntent {
     data object FetchApi : AppIntent()

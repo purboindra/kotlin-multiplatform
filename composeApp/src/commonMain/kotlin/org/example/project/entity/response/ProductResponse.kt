@@ -1,7 +1,6 @@
-package org.example.project.network.response
+package org.example.project.entity.response
 
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 typealias ProductResponse = List<ProductResponseItem>

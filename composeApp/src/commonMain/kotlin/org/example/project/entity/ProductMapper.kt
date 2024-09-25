@@ -1,7 +1,7 @@
-package org.example.project.network
+package org.example.project.entity
 
-import org.example.project.network.data.Product
-import org.example.project.network.response.ProductResponse
+import org.example.project.entity.data.Product
+import org.example.project.entity.response.ProductResponse
 
 object ProductMapper {
     

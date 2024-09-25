@@ -1,4 +1,4 @@
-package org.example.project.network
+package org.example.project.base
 
 sealed class State<out T> {
     data object Idle : State<Nothing>()

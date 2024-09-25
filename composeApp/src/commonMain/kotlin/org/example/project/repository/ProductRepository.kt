@@ -1,10 +1,12 @@
-package org.example.project.network
+package org.example.project.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.example.project.base.BaseRepository
-import org.example.project.network.data.Product
-import org.example.project.network.response.ProductResponse
-import org.example.project.network.response.ProductResponseItem
+import org.example.project.entity.ProductMapper
+import org.example.project.base.State
+import org.example.project.entity.data.Product
+import org.example.project.entity.response.ProductResponse
+import org.example.project.entity.response.ProductResponseItem
 
 class ProductRepository : BaseRepository() {
     

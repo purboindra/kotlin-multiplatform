@@ -1,7 +1,7 @@
 package org.example.project
 
 import androidx.compose.runtime.Composable
-import org.example.project.network.State
+import org.example.project.base.State
 
 
 @Composable
