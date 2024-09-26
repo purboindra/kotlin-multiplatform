@@ -56,6 +56,9 @@ kotlin {
             
             // VIEW MODEL
             implementation(libs.jetbrain.viewmodel)
+            
+            // NAVIGATION
+            implementation(libs.jetbrain.navigation)
         }
         
         iosMain.dependencies {

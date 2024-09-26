@@ -1,13 +1,5 @@
 package org.example.project
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -17,16 +9,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import org.example.project.entity.data.Product
-import org.example.project.navigation.LocalNavigationComponent
-import org.example.project.navigation.NavigationComponent
-import org.example.project.navigation.Router
+import org.example.project.navigation.LocalNavigationController
+import org.example.project.navigation.Routers
 import org.example.project.screen.Screen1
 import org.example.project.screen.Screen2
 import org.example.project.screen.Screen3
@@ -38,34 +29,40 @@ fun App(
     viewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     
-    
     val stateModel by viewModel.stateModel.collectAsState()
-    val navigationComponent = remember { NavigationComponent() }
-    val router by navigationComponent.stateRouter.collectAsState()
     
     MaterialTheme {
         
-        CompositionLocalProvider(
-            LocalNavigationComponent provides navigationComponent
-        ) {
-            
-            AnimatedContent(
-                targetState = router
-            ) {
-                when (it) {
-                    is Router.Screen1 -> {
-                        Screen1()
-                    }
+        val navigationController = rememberNavController()
+        
+        CompositionLocalProvider(LocalNavigationController provides navigationController) {
+            NavHost(navController = navigationController, startDestination = Routers.SCREEN_1) {
+                composable(
+                    route = Routers.SCREEN_1
+                ) {
+                    Screen1()
+                }
+                
+                composable(
+                    route = Routers.SCREEN_2,
+                    arguments = listOf(
+                        navArgument(name = "name") {
+                            this.defaultValue = ""
+                        }
+                    )
+                ) {
+                    val name = it.arguments?.getString("name").orEmpty()
                     
-                    is Router.Screen2 -> {
-                        Screen2()
-                    }
-                    
-                    is Router.Screen3 -> {
-                        Screen3()
-                    }
+                    Screen2(name)
+                }
+                
+                composable(
+                    route = Routers.SCREEN_3
+                ) {
+                    Screen3()
                 }
             }
+            
         }
         
         
