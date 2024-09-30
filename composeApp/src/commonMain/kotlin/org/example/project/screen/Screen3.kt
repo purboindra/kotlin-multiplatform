@@ -9,14 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.navigation.LocalNavigationController
+import org.example.project.navigation.LocalNavigator
 
 @Composable
 fun Screen3() {
-    val navigationController = LocalNavigationController.current
+    val navigator = LocalNavigator.current
     
     Column {
         Button(onClick = {
-            navigationController.popBackStack()
+            navigator.back()
         }) {
             Text("Back")
         }

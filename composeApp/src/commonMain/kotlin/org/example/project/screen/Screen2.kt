@@ -9,17 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.navigation.LocalNavigationController
+import org.example.project.navigation.LocalNavigator
+import org.example.project.navigation.NavTarget
 import org.example.project.navigation.Routers
 
 
 @Composable
-fun Screen2(name:String) {
-    val navigationController = LocalNavigationController.current
-    
+fun Screen2(name: String) {
+    val navigator = LocalNavigator.current
     
     Column {
         Button(onClick = {
-            navigationController.popBackStack()
+            navigator.back()
         }) {
             Text("Back")
         }
@@ -30,7 +31,7 @@ fun Screen2(name:String) {
         Spacer(modifier = Modifier.height(12.dp))
         
         Button(onClick = {
-            navigationController.navigate(Routers.SCREEN_3)
+            navigator.navigate(NavTarget.Screen3)
         }) {
             Text("Navigate to screen 3")
         }

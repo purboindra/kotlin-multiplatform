@@ -15,12 +15,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.navigation.LocalNavigationController
+import org.example.project.navigation.LocalNavigator
+import org.example.project.navigation.NavTarget
 import org.example.project.navigation.Routers
 
 @Composable
 fun Screen1() {
     
-    val navigationController = LocalNavigationController.current
+    val navigator = LocalNavigator.current
     
     var textFieldName by remember { mutableStateOf("") }
     
@@ -42,7 +44,7 @@ fun Screen1() {
         )
         
         Button(onClick = {
-            navigationController.navigate(route = Routers.SCREEN_2.replace("{name}", textFieldName))
+            navigator.navigate(navTarget = NavTarget.Screen2(textFieldName))
         }) {
             Text("Navigate to screen 2 ")
         }
