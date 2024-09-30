@@ -59,6 +59,11 @@ kotlin {
             
             // NAVIGATION
             implementation(libs.jetbrain.navigation)
+            
+            // APPYX
+            implementation(libs.appyx.navigation)
+            implementation(libs.appyx.interaction)
+            api(libs.appyx.backstack)
         }
         
         iosMain.dependencies {
